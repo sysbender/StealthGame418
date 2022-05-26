@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "FPSObjectiveActor.generated.h"
+class USphereComponent;
 
 UCLASS()
 class FPSGAME_API AFPSObjectiveActor : public AActor
@@ -17,7 +18,10 @@ public:
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	UStaticMeshComponent* MeshComp;  //
+
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	USphereComponent* SphereComp; //collision
 
 
