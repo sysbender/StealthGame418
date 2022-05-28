@@ -3,6 +3,9 @@
 #include "FPSAIGuard.h"
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/Actor.h"
+ 
+
 
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
@@ -21,6 +24,8 @@ AFPSAIGuard::AFPSAIGuard()
 void AFPSAIGuard::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OriginalRotatoin = GetActorRotation();
 	
 }
 
@@ -37,7 +42,28 @@ void AFPSAIGuard::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location
 {
 
 
-	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, 10.0f );
+	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green,false, 10.0f );
+
+	FVector Direction = Location - GetActorLocation();
+	Direction.Normalize();
+
+	FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();
+
+	NewLookAt.Pitch = 0.0f;
+	NewLookAt.Roll = 0.0f;
+
+	SetActorRotation(NewLookAt);
+
+	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
+	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
+
+ 
+}
+
+void AFPSAIGuard::ResetOrientation()
+{
+
+	SetActorRotation(OriginalRotatoin);
 }
 
 // Called every frame
